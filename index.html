@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0 user-scalable=0">
+  <title>Triple Chat Application</title>
+  <style>
+    .chat-wrap {
+      padding: 50px 0 10px 0;
+      width: 100%;
+      background-color: #EFEFEF;
+      font-family: 'Geologica', 'Arial', sans-serif;
+      font-weight: 300;
+    }
+    .chat-container {
+      border-radius: 20px;
+      width: 95%;
+      margin: 20px auto;
+      background-color: white;
+      display: flex;
+      flex-direction: column;
+      height: 500px;
+      overflow: hidden;
+    }
+    @media screen and (min-width: 640px) {
+      .chat-container {
+        width: 60%;
+      }
+    }
+    
+    .messageBox {
+      flex: 1;
+      overflow-y: auto;
+      padding: 25px 10px 10px 10px;
+      border-bottom: 1px solid #ccc;
+      scrollbar-width: thin;
+      scrollbar-color: #ebe6e7 #fff;
+    }
+    .messageBox::-webkit-scrollbar {
+      width: 12px;
+    }
+    .messageBox::-webkit-scrollbar-track {
+      background: #fff;
+    }
+    .messageBox::-webkit-scrollbar-thumb {
+      background-color: #e6e7eb;
+      border: 2px solid #fff;
+      border-radius: 6px;
+    }
+    
+    .input-group {
+      display: flex;
+      padding: 10px;
+      align-items: center;
+    }
+    
+    .input-group input {
+      flex: 1;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      margin-right: 10px;
+      box-sizing: border-box;
+      font-family: 'Geologica', 'Arial', sans-serif;
+      font-weight: 300;
+      font-size: 15px;
+    }
+    
+    .input-group button {
+      padding: 10px 20px;
+      border: none;
+      background-color: #5E33BA;
+      color: white;
+      border-radius: 10px;
+      cursor: pointer;
+      font-family: 'Geologica', 'Arial', sans-serif;
+      font-size: 14px;
+    }
+    
+    .input-group button:hover {
+      opacity: .6;
+    }
+    
+    .message {
+      display: flex;
+      align-items: flex-end;
+      margin-bottom: 10px;
+    }
+    
+    .message.out {
+      justify-content: flex-start;
+    }
+    
+    .message.in {
+      justify-content: flex-end;
+    }
+    
+    .message .icon {
+      width: 40px;
+      height: 40px;
+      object-fit: cover;
+      border-radius: 20px;
+      background-color: #007bff;
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 20px;
+      margin-right: 10px;
+    }
+    
+    .message.in .icon {
+      display: none;
+    }
+    
+    .message.out .icon {
+      background: url('https://i.ibb.co/RbbN2mp/fo-S-Sdo-Lo-EI-1.jpg');
+      background-size: cover;
+    }
+    
+    .message .text {
+      position: relative;
+      top: -20px;
+      background-color: #f1f1f1;
+      padding: 10px;
+      max-width: 70%;
+      font-family: 'Geologica', 'Arial', sans-serif;
+      font-weight: 300;
+    }
+    
+    .message.out .text {
+      border-radius: 10px 10px 10px 0;
+      background-color: #EFEFEF;
+      color: #797979;
+    }
+    
+    .message.in .text {
+      border-radius: 10px 0 10px 10px;
+      background-color: #5E33BA;
+      color: #fff;
+    }
+
+    /* Для наглядности чат-блоки можно чуть визуально разделить */
+    .separator {
+      width: 60%;
+      margin: 0 auto;
+      border-bottom: 2px dashed #ccc;
+      margin-bottom: 40px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ================= ЧАТ №1 ================= -->
+  <div class="chat-wrap">
+    <div class="chat-container" id="chat-container-1">
+      <div id="messageBox_1" class="messageBox">
+        <!-- Первый OutMessage для ЧАТА №1 -->
+        <div id="firstMessageOutChatbot_1" class="message out">
+          <div class="icon"></div>
+          <div id="firstMessageOutChatbotText_1" class="text"></div>
+        </div>
+      </div>
+      <div class="input-group">
+        <input type="text" id="message-input-1" placeholder="Type a message...">
+        <button id="send-button-1">Send</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="separator"></div>
+
+  <!-- ================= ЧАТ №2 ================= -->
+  <div class="chat-wrap">
+    <div class="chat-container" id="chat-container-2">
+      <div id="messageBox_2" class="messageBox">
+        <!-- Первый OutMessage для ЧАТА №2 -->
+        <div id="firstMessageOutChatbot_2" class="message out">
+          <div class="icon"></div>
+          <div id="firstMessageOutChatbotText_2" class="text"></div>
+        </div>
+      </div>
+      <div class="input-group">
+        <input type="text" id="message-input-2" placeholder="Type a message...">
+        <button id="send-button-2">Send</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="separator"></div>
+
+  <!-- ================= ЧАТ №3 ================= -->
+  <div class="chat-wrap">
+    <div class="chat-container" id="chat-container-3">
+      <div id="messageBox_3" class="messageBox">
+        <!-- Первый OutMessage для ЧАТА №3 -->
+        <div id="firstMessageOutChatbot_3" class="message out">
+          <div class="icon"></div>
+          <div id="firstMessageOutChatbotText_3" class="text"></div>
+        </div>
+      </div>
+      <div class="input-group">
+        <input type="text" id="message-input-3" placeholder="Type a message...">
+        <button id="send-button-3">Send</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Тексты приветствия (можно расширять, здесь для примера оставляем, как было)
+    const firstMessages = {
+      'ru': `
+          Привет! Я цифровой двойник Анатолия Илле, одного из создателей DEXART.
+
+          Я могу показать вам, насколько живыми и персонализированными могут быть цифровые двойники. А еще я - отличный пример того, как ИИ помогает компаниям.
+          Давайте я покажу, как решения DEXART могут помочь именно вашему бизнесу. Я могу общаться на любом языке, который будет тебе удобен. Расскажите немного о себе, пожалуйста.
+      `,
+      'en': `
+          Hello! I am the digital twin of Anatoly Ille, one of the creators of DEXART.
+
+          I can show you how lively and personalized digital twins can be. I am also a great example of how AI helps companies.
+          Let me show you how DEXART solutions can help your business specifically. I can communicate in any language that is convenient for you. Please tell me a little about yourself.
+      `,
+      'de': `
+          Hallo! Ich bin das digitale Double von Anatoly Ille, einem der Schöpfer von DEXART.
+
+          Ich kann Ihnen zeigen, wie lebendig und personalisiert digitale Zwillinge sein können. Ich bin auch ein großartiges Beispiel dafür, wie KI Unternehmen hilft.
+          Lassen Sie mich Ihnen zeigen, wie DEXART-Lösungen speziell Ihrem Unternehmen helfen können. Ich kann in jeder Sprache kommunizieren, die für Sie bequem ist. Bitte erzählen Sie mir ein wenig über sich.
+      `,
+      'tr': `
+          Merhaba! Ben, DEXART'ın yaratıcılarından Anatoly Ille'nin dijital ikiziyim.
+
+          Dijital ikizlerin ne kadar canlı ve kişiselleştirilebilir olabileceğini gösterebilirim. Ayrıca, yapay zekanın şirketlere nasıl yardımcı olduğunun harika bir örneğiyim.
+          DEXART çözümlerinin işletmenize nasıl yardımcı olabileceğini göstereyim. Sizin için uygun olan herhangi bir dilde iletişim kurabilirim. Lütfen bana kendinizden biraz bahsedin.
+      `,
+    };
+
+    // Определим язык по URL или оставим en по умолчанию
+    let currentLang = 'en';
+    if (window.location.pathname.includes('ru')) currentLang = 'ru';
+    else if (window.location.pathname.includes('de')) currentLang = 'de';
+    else if (window.location.pathname.includes('tr')) currentLang = 'tr';
+
+    // Функция настройки чата
+    function setupChat(chatNumber, wsUrl) {
+      // Получаем нужные элементы DOM
+      const messageBox = document.getElementById(`messageBox_${chatNumber}`);
+      const inputField = document.getElementById(`message-input-${chatNumber}`);
+      const sendButton = document.getElementById(`send-button-${chatNumber}`);
+      const firstMessageOutChatbotText = document.getElementById(`firstMessageOutChatbotText_${chatNumber}`);
+
+      // Устанавливаем приветственное сообщение
+      firstMessageOutChatbotText.innerText = firstMessages[currentLang] || firstMessages['en'];
+
+      // Работа с clientId для этого конкретного чата
+      // Например, ключ в localStorage: "clientId_1", "clientId_2" и т.д.
+      let localStorageKey = `clientId_${chatNumber}`;
+      let clientId = localStorage.getItem(localStorageKey);
+
+      // Создаём сокет для этого чата
+      let socket = new WebSocket(wsUrl);
+      let intervalId;
+
+      // Функция проверки, что сокет открыт
+      function isOpen(ws) {
+        return ws.readyState === ws.OPEN;
+      }
+
+      // Обработка отправки сообщения
+      function sendMessage() {
+        const message = inputField.value.trim();
+        if (!message) return;
+        inputField.value = '';
+        if (isOpen(socket)) {
+          socket.send(JSON.stringify({ clientId, message }));
+        }
+        // Добавляем сообщение в интерфейс (как входящее от пользователя)
+        const outgoingMessageElement = document.createElement('div');
+        outgoingMessageElement.className = 'message in';
+        const textDiv = document.createElement('div');
+        textDiv.className = 'text';
+        textDiv.innerHTML = message;
+        outgoingMessageElement.appendChild(textDiv);
+        messageBox.appendChild(outgoingMessageElement);
+        messageBox.scrollTop = messageBox.scrollHeight;
+      }
+
+      // Привязываем отправку к кнопке и Enter
+      sendButton.addEventListener('click', sendMessage);
+      inputField.addEventListener('keydown', function(event) {
+        if (event.keyCode === 13) {
+          event.preventDefault();
+          sendButton.click();
+        }
+      });
+
+      // Функция для настройки сокета
+      function initSocket() {
+        socket.addEventListener('open', function() {
+          // Если clientId ещё нет, запрашиваем
+          if (!clientId) {
+            socket.send(JSON.stringify({ clientId, message: 'getClientId' }));
+          }
+          // Запрашиваем историю
+          socket.send(JSON.stringify({ clientId, message: 'getHistory' }));
+
+          // Каждые 5 секунд отправляем ping
+          intervalId = setInterval(() => {
+            if (!isOpen(socket)) {
+              socket.close();
+            } else {
+              socket.send(JSON.stringify({ clientId, message: 'ping' }));
+            }
+          }, 5000);
+        });
+
+        // Обработка входящих сообщений
+        socket.addEventListener('message', function(event) {
+          if (event.data === 'pong') {
+            console.log(`Чат #${chatNumber} получил pong`);
+            return;
+          }
+          let data;
+          try {
+            data = JSON.parse(event.data);
+          } catch (e) {
+            console.error('Invalid JSON received in Chat #' + chatNumber, event.data);
+            return;
+          }
+
+          // Если это сообщение с clientId
+          if (data.type === 'clientId') {
+            clientId = data.msg;
+            localStorage.setItem(localStorageKey, clientId);
+            return;
+          }
+
+          // Если это редактирование
+          if (data.type === 'edit') {
+            const messageElement = document.getElementById(data.id);
+            if (messageElement) {
+              messageElement.innerHTML = data.msg;
+              messageBox.scrollTop = messageBox.scrollHeight + 40;
+            }
+            return;
+          }
+
+          // Иначе, это обычное сообщение
+          const incomingMessageElement = document.createElement('div');
+          incomingMessageElement.className = `message ${data.direction}`;
+          const iconDivChat = document.createElement('div');
+          iconDivChat.className = 'icon';
+          const textDiv = document.createElement('div');
+          textDiv.className = 'text';
+          textDiv.id = data.id;
+          textDiv.innerHTML = data.msg;
+
+          incomingMessageElement.appendChild(iconDivChat);
+          incomingMessageElement.appendChild(textDiv);
+          messageBox.appendChild(incomingMessageElement);
+          messageBox.scrollTop = messageBox.scrollHeight + 40;
+        });
+
+        // Обработка ошибок
+        socket.addEventListener('error', function() {
+          console.error(`WebSocket error in Chat #${chatNumber}`);
+          if (!clientId) {
+            socket.send(JSON.stringify({ clientId, message: 'getClientId' }));
+          }
+          setTimeout(function() {
+            socket.close();
+          }, 1000);
+        });
+
+        // Обработка закрытия
+        socket.addEventListener('close', function() {
+          console.log(`Connection closed for Chat #${chatNumber}`);
+          clearInterval(intervalId);
+          // Попытка переподключения через 2 секунды
+          setTimeout(() => {
+            socket = new WebSocket(wsUrl);
+            initSocket();
+          }, 2000);
+        });
+      }
+
+      initSocket();
+    }
+
+    // Инициализируем три чата
+    setupChat(1, 'wss://dx.xt.lv');
+    setupChat(2, 'wss://ws2.dxrt.ai');
+    setupChat(3, 'wss://ws3.dxrt.ai');
+  </script>
+</body>
+</html>
