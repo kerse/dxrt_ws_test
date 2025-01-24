@@ -1,36 +1,45 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0 user-scalable=0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0 user-scalable=0" />
   <title>Чат №3</title>
   <style>
-    /* Стиль — аналогичный предыдущим, отличие только в аватарке для "out" */
-
     html, body {
       margin: 0;
       padding: 0;
       width: 100%;
       height: 100%;
-      font-family: 'Geologica', 'Arial', sans-serif;
-      font-weight: 300;
-      background-color: #EFEFEF;
+    }
+
+    .fixed-container {
+      width: 100%;
+      max-width: 800px;
+      height: 600px;
+      margin: 0 auto;
+      border: 1px solid #fff;
+      box-sizing: border-box;
+      overflow: hidden;
     }
 
     .chat-container {
-      width: 100%;
-      height: 100%;
       display: flex;
       flex-direction: column;
+      width: 100%;
+      height: 100%;
       background-color: #fff;
-      overflow: hidden;
     }
 
     .messageBox {
       flex: 1;
-      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start; /* Сверху вниз */
       padding: 10px;
       box-sizing: border-box;
+      overflow-y: auto;
+      min-height: 0;
+      background-color: #fff;
     }
 
     .input-group {
@@ -38,6 +47,7 @@
       align-items: center;
       padding: 10px;
       box-sizing: border-box;
+      background: #fff;
     }
 
     .input-group input {
@@ -47,7 +57,7 @@
       border-radius: 10px;
       margin-right: 10px;
       font-size: 15px;
-      font-family: inherit;
+      font-family: 'Arial', sans-serif;
       box-sizing: border-box;
     }
 
@@ -58,7 +68,7 @@
       color: #fff;
       border-radius: 10px;
       cursor: pointer;
-      font-family: inherit;
+      font-family: 'Arial', sans-serif;
       font-size: 14px;
     }
 
@@ -71,7 +81,6 @@
       align-items: flex-end;
       margin-bottom: 10px;
     }
-
     .message.out {
       justify-content: flex-start;
     }
@@ -79,23 +88,17 @@
       justify-content: flex-end;
     }
 
-    .message .icon {
+    .icon {
       width: 40px;
       height: 40px;
-      object-fit: cover;
       border-radius: 20px;
-      color: white;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      font-size: 20px;
-      margin-right: 10px;
       background-size: cover;
-      background-position: center center;
+      background-position: center;
+      margin-right: 10px;
     }
 
-    /* Аватарка для исходящих сообщений в ЧАТЕ №3 */
-    .message.out .icon {
+    /* Уникальная аватарка Чата №3 */
+    .avatar-chat3 {
       background-image: url('https://optim.tildacdn.com/tild3361-6337-4339-b233-366166613337/-/resize/100x/-/format/webp/Frame_2087325177.jpg');
     }
 
@@ -105,11 +108,10 @@
 
     .message .text {
       position: relative;
-      top: -20px;
       background-color: #f1f1f1;
       padding: 10px;
       max-width: 70%;
-      font-family: inherit;
+      font-family: 'Arial', sans-serif;
       font-weight: 300;
     }
 
@@ -117,29 +119,33 @@
       border-radius: 10px 10px 10px 0;
       background-color: #EFEFEF;
       color: #797979;
+      top: -20px;
     }
     .message.in .text {
       border-radius: 10px 0 10px 10px;
       background-color: #5E33BA;
       color: #fff;
+      top: -20px;
     }
   </style>
 </head>
 <body>
-  <!-- ЧАТ №3 -->
-  <div class="chat-container" id="chat-container-3">
-    <div id="messageBox_3" class="messageBox">
-      <!-- Первое исходящее сообщение на русском -->
-      <div id="firstMessageOutChatbot_3" class="message out">
-        <div class="icon"></div>
-        <div id="firstMessageOutChatbotText_3" class="text">
-          Здравствуй! Я Эльса, скажи мне дату твоего рождения и я расскажу тебе твои сильные стороны!
+
+  <div class="fixed-container">
+    <div class="chat-container" id="chat-container-3">
+      <div id="messageBox_3" class="messageBox">
+        <!-- Первое сообщение Чат №3 -->
+        <div class="message out">
+          <div class="icon avatar-chat3"></div>
+          <div class="text">
+            Здравствуй! Меня зовут Эльза, назови дату твоего рождения и я расскажу о твоем характере.
+          </div>
         </div>
       </div>
-    </div>
-    <div class="input-group">
-      <input type="text" id="message-input-3" placeholder="Введите сообщение...">
-      <button id="send-button-3">Отправить</button>
+      <div class="input-group">
+        <input type="text" id="message-input-3" placeholder="Введите сообщение..." />
+        <button id="send-button-3">Отправить</button>
+      </div>
     </div>
   </div>
 
@@ -163,13 +169,14 @@
       if (isOpen(socket3)) {
         socket3.send(JSON.stringify({ clientId: clientId3, message }));
       }
-      const outgoingMessageElement = document.createElement('div');
-      outgoingMessageElement.className = 'message in';
+      const userMsg = document.createElement('div');
+      userMsg.className = 'message in';
       const textDiv = document.createElement('div');
       textDiv.className = 'text';
       textDiv.innerHTML = message;
-      outgoingMessageElement.appendChild(textDiv);
-      messageBox3.appendChild(outgoingMessageElement);
+      userMsg.appendChild(textDiv);
+      messageBox3.appendChild(userMsg);
+
       messageBox3.scrollTop = messageBox3.scrollHeight;
     }
 
@@ -216,25 +223,26 @@
         return;
       }
       if (data.type === 'edit') {
-        const messageElement = document.getElementById(data.id);
-        if (messageElement) {
-          messageElement.innerHTML = data.msg;
+        const msgEl = document.getElementById(data.id);
+        if (msgEl) {
+          msgEl.innerHTML = data.msg;
           messageBox3.scrollTop = messageBox3.scrollHeight + 40;
         }
         return;
       }
-      const incomingMessageElement = document.createElement('div');
-      incomingMessageElement.className = `message ${data.direction}`;
-      const iconDivChat = document.createElement('div');
-      iconDivChat.className = 'icon';
+      const incomingMsg = document.createElement('div');
+      incomingMsg.className = `message ${data.direction}`;
+      const iconDiv = document.createElement('div');
+      iconDiv.className = 'icon avatar-chat3';
       const textDiv = document.createElement('div');
       textDiv.className = 'text';
       textDiv.id = data.id;
       textDiv.innerHTML = data.msg;
 
-      incomingMessageElement.appendChild(iconDivChat);
-      incomingMessageElement.appendChild(textDiv);
-      messageBox3.appendChild(incomingMessageElement);
+      incomingMsg.appendChild(iconDiv);
+      incomingMsg.appendChild(textDiv);
+      messageBox3.appendChild(incomingMsg);
+
       messageBox3.scrollTop = messageBox3.scrollHeight + 40;
     });
 

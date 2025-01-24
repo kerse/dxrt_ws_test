@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Тестовый Чат</title>
+  <style>
+    html, body {
+      margin: 0; 
+      padding: 0;
+      width: 100%; 
+      height: 100%;
+    }
+    /* Внешний контейнер: фиксируем высоту, чтобы чат не растягивался бесконечно */
+    .chat-wrapper {
+      width: 80%;
+      max-width: 600px;
+      height: 500px;
+      margin: 20px auto;
+      border: 1px solid #ccc;
+      display: flex;
+      flex-direction: column;
+      /* Не указываем overflow: hidden; чтобы скролл был доступен */
+    }
+    /* Основная область с сообщениями: растёт и прокручивается при избытке */
+    .messageBox {
+      flex: 1;                     /* Занимает всё свободное пространство */
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;   /* Прижимаем контент к нижнему краю */
+      overflow-y: auto;           /* Позволяем вертикальную прокрутку */
+      -webkit-overflow-scrolling: touch; /* Для iOS */
+      padding: 10px;
+      background: #fafafa;
+      box-sizing: border-box;
+      min-height: 0; /* Фикс для flex-контейнеров, чтобы точно позволить скролл */
+    }
+    /* Поле ввода и кнопка, приклеенные снизу */
+    .input-group {
+      display: flex;
+      gap: 10px;
+      padding: 10px;
+      background: #fff;
+      border-top: 1px solid #ccc;
+      box-sizing: border-box;
+    }
+    .input-group input {
+      flex: 1;
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-size: 14px;
+    }
+    .input-group button {
+      padding: 8px 16px;
+      font-size: 14px;
+      background: #5e33ba;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .input-group button:hover {
+      opacity: 0.8;
+    }
+    .message {
+      display: flex;
+      margin-bottom: 10px;
+    }
+    .message.out {
+      justify-content: flex-start;
+    }
+    .message.in {
+      justify-content: flex-end;
+    }
+    .message .bubble {
+      background: #f1f1f1;
+      padding: 10px;
+      max-width: 70%;
+    }
+    .message.in .bubble {
+      background: #5e33ba;
+      color: #fff;
+      border-radius: 10px 0 10px 10px;
+    }
+    .message.out .bubble {
+      background: #eee;
+      border-radius: 10px 10px 10px 0;
+    }
+  </style>
+</head>
+<body>
+
+<div class="chat-wrapper">
+  <div class="messageBox" id="messageBox">
+    <!-- Первое исходящее сообщение (прижатое к низу) -->
+    <div class="message out">
+      <div class="bubble">
+        Привет! Я прижат к низу контейнера. Если влезаю, скролл не появится.
+      </div>
+    </div>
+  </div>
+  <div class="input-group">
+    <button id="addMessagesBtn">Сгенерировать много сообщений</button>
+  </div>
+</div>
+
+<script>
+  const messageBox = document.getElementById('messageBox');
+  const addMessagesBtn = document.getElementById('addMessagesBtn');
+
+  // Кнопка для наглядной демонстрации "большого объёма" сообщений
+  addMessagesBtn.addEventListener('click', () => {
+    // Добавляем 20 новых "in" и "out" сообщений
+    for (let i = 0; i < 20; i++) {
+      const direction = i % 2 === 0 ? 'in' : 'out';
+      const msgEl = document.createElement('div');
+      msgEl.className = `message ${direction}`;
+      const bubble = document.createElement('div');
+      bubble.className = 'bubble';
+      bubble.innerHTML = `Это сообщение #${i + 1}. Lorem ipsum dolor sit amet, consectetur adipiscing elit.`;
+      msgEl.appendChild(bubble);
+      messageBox.appendChild(msgEl);
+    }
+    // Прокручиваем вниз, чтобы увидеть последнее сообщение
+    messageBox.scrollTop = messageBox.scrollHeight;
+  });
+</script>
+
+</body>
+</html>

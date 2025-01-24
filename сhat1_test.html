@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0 user-scalable=0" />
-  <title>Чат №2</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0 user-scalable=0">
+  <title>Чат №2 (Топ‑даун, с рабочим скроллом)</title>
   <style>
     html, body {
       margin: 0;
@@ -19,6 +19,8 @@
       margin: 0 auto;
       border: 1px solid #fff;
       box-sizing: border-box;
+      /* Если на мобильных вдруг скролл блокируется, 
+         можно отключить overflow: hidden. Пока оставляем как было. */
       overflow: hidden;
     }
 
@@ -31,14 +33,14 @@
     }
 
     .messageBox {
-      flex: 1;
+      flex: 1;                   /* Заполняет всё оставшееся пространство */
       display: flex;
       flex-direction: column;
-      justify-content: flex-start; /* Сверху вниз */
+      justify-content: flex-start; /* Сообщения идут сверху вниз */
       padding: 10px;
       box-sizing: border-box;
-      overflow-y: auto;
-      min-height: 0;       /* Обеспечивает работу скролла во flex */
+      overflow-y: auto;          /* При переполнении появляется вертикальный скролл */
+      min-height: 0;             /* Ключевая настройка для флекс-контейнера */
       background-color: #fff;
     }
 
@@ -81,11 +83,12 @@
       align-items: flex-end;
       margin-bottom: 10px;
     }
+
     .message.out {
-      justify-content: flex-start;
+      justify-content: flex-start; 
     }
     .message.in {
-      justify-content: flex-end;
+      justify-content: flex-end;   
     }
 
     .icon {
@@ -97,7 +100,7 @@
       margin-right: 10px;
     }
 
-    /* Уникальная аватарка Чата №2 */
+    /* Аватарка для Чата №2 */
     .avatar-chat2 {
       background-image: url('https://optim.tildacdn.com/tild6163-6266-4639-a130-333164316462/-/resize/100x/-/format/webp/Frame_2087325176.jpg');
     }
@@ -130,14 +133,13 @@
   </style>
 </head>
 <body>
-
   <div class="fixed-container">
     <div class="chat-container" id="chat-container-2">
       <div id="messageBox_2" class="messageBox">
-        <!-- Первое исходящее сообщение (Чат №2) -->
-        <div class="message out">
+        <!-- Первый "out" (исходящее) сообщение -->
+        <div id="firstMessageOutChatbot_2" class="message out">
           <div class="icon avatar-chat2"></div>
-          <div class="text">
+          <div id="firstMessageOutChatbotText_2" class="text">
             Привет! Меня зовут Анна, я СММ-специалист. Помогу написать пост в Инстаграме или посоветую стратегию продвижения в соц. сетях.
           </div>
         </div>
@@ -160,23 +162,29 @@
       return ws.readyState === ws.OPEN;
     }
 
+    // Функция отправки сообщения (пользователь -> in)
     function sendMessage2() {
       const inputField2 = document.getElementById('message-input-2');
       const messageBox2 = document.getElementById('messageBox_2');
       const message = inputField2.value.trim();
       if (!message) return;
       inputField2.value = '';
+
+      // Отправляем на сервер
       if (isOpen(socket2)) {
         socket2.send(JSON.stringify({ clientId: clientId2, message }));
       }
-      const outgoingMessageElement = document.createElement('div');
-      outgoingMessageElement.className = 'message in';
+
+      // Добавляем новое "in" сообщение внизу
+      const userMsg = document.createElement('div');
+      userMsg.className = 'message in';
       const textDiv = document.createElement('div');
       textDiv.className = 'text';
       textDiv.innerHTML = message;
-      outgoingMessageElement.appendChild(textDiv);
-      messageBox2.appendChild(outgoingMessageElement);
+      userMsg.appendChild(textDiv);
+      messageBox2.appendChild(userMsg);
 
+      // Прокручиваем вниз, чтобы видеть последние сообщения
       messageBox2.scrollTop = messageBox2.scrollHeight;
     }
 
@@ -188,12 +196,14 @@
       }
     });
 
+    // При открытии WebSocket
     socket2.addEventListener('open', function() {
       if (!clientId2) {
         socket2.send(JSON.stringify({ clientId: clientId2, message: 'getClientId' }));
       }
       socket2.send(JSON.stringify({ clientId: clientId2, message: 'getHistory' }));
 
+      // Пинг
       intervalId2 = setInterval(() => {
         if (!isOpen(socket2)) {
           socket2.close();
@@ -203,6 +213,7 @@
       }, 5000);
     });
 
+    // При получении сообщения от сервера
     socket2.addEventListener('message', function(event) {
       const messageBox2 = document.getElementById('messageBox_2');
       if (event.data === 'pong') {
@@ -223,29 +234,32 @@
         return;
       }
       if (data.type === 'edit') {
-        const messageElement = document.getElementById(data.id);
-        if (messageElement) {
-          messageElement.innerHTML = data.msg;
+        const msgEl = document.getElementById(data.id);
+        if (msgEl) {
+          msgEl.innerHTML = data.msg;
           messageBox2.scrollTop = messageBox2.scrollHeight + 40;
         }
         return;
       }
+      // Обычное сообщение (direction может быть 'out' или 'in')
       const incomingMessageElement = document.createElement('div');
       incomingMessageElement.className = `message ${data.direction}`;
-      const iconDivChat2 = document.createElement('div');
-      iconDivChat2.className = 'icon avatar-chat2';
+      const iconDiv = document.createElement('div');
+      iconDiv.className = 'icon avatar-chat2';
       const textDiv = document.createElement('div');
       textDiv.className = 'text';
       textDiv.id = data.id;
       textDiv.innerHTML = data.msg;
 
-      incomingMessageElement.appendChild(iconDivChat2);
+      incomingMessageElement.appendChild(iconDiv);
       incomingMessageElement.appendChild(textDiv);
       messageBox2.appendChild(incomingMessageElement);
 
+      // Прокрутить вниз
       messageBox2.scrollTop = messageBox2.scrollHeight + 40;
     });
 
+    // Ошибка
     socket2.addEventListener('error', function() {
       console.error('WebSocket error in Chat #2');
       if (!clientId2) {
@@ -256,6 +270,7 @@
       }, 1000);
     });
 
+    // Закрытие (переподключение)
     socket2.addEventListener('close', function() {
       console.log('Connection closed for Chat #2');
       clearInterval(intervalId2);

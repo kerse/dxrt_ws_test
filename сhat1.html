@@ -1,43 +1,55 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0 user-scalable=0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0 user-scalable=0" />
   <title>Чат №1</title>
   <style>
-    /* ======= Единый стиль для всех чатов (с учётом задания) ======= */
-
     html, body {
       margin: 0;
       padding: 0;
       width: 100%;
       height: 100%;
-      font-family: 'Geologica', 'Arial', sans-serif;
-      font-weight: 300;
-      background-color: #EFEFEF; /* Можно менять фон, если нужно */
+    }
+
+    .fixed-container {
+      width: 100%;
+      max-width: 800px;
+      height: 600px;
+      margin: 0 auto;
+      border: 1px solid #fff;
+      box-sizing: border-box;
+      overflow: hidden; /* как в чате 2 */
     }
 
     .chat-container {
-      width: 100%;
-      height: 100%;
       display: flex;
       flex-direction: column;
-      background-color: #fff; /* Цвет фона самого блока чата */
-      overflow: hidden;       /* Чтобы не было прокрутки за пределы блока */
+      width: 100%;
+      height: 100%;
+      background-color: #fff;
     }
 
+    /* Основное пространство для сообщений */
     .messageBox {
-      flex: 1;               /* Расширяется на всё свободное пространство */
-      overflow-y: auto;      /* Вертикальная прокрутка, если сообщений много */
-      padding: 10px;         /* Небольшое поле, чтобы текст не прилипал */
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start; /* Сверху вниз */
+      padding: 10px;
       box-sizing: border-box;
+      overflow-y: auto;  /* Вертикальный скролл */
+      min-height: 0;     /* Ключ для корректного скролла во flex-контейнере */
+      background-color: #fff;
     }
 
+    /* Поле ввода снизу */
     .input-group {
       display: flex;
       align-items: center;
-      padding: 10px;         /* Маленький отступ вокруг поля ввода */
+      padding: 10px;
       box-sizing: border-box;
+      background: #fff;
     }
 
     .input-group input {
@@ -47,7 +59,7 @@
       border-radius: 10px;
       margin-right: 10px;
       font-size: 15px;
-      font-family: inherit;
+      font-family: 'Arial', sans-serif;
       box-sizing: border-box;
     }
 
@@ -58,7 +70,7 @@
       color: #fff;
       border-radius: 10px;
       cursor: pointer;
-      font-family: inherit;
+      font-family: 'Arial', sans-serif;
       font-size: 14px;
     }
 
@@ -79,37 +91,28 @@
       justify-content: flex-end;
     }
 
-    .message .icon {
+    /* Уникальная аватарка для Чата №1 */
+    .icon {
       width: 40px;
       height: 40px;
-      object-fit: cover;
       border-radius: 20px;
-      color: white;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      font-size: 20px;
-      margin-right: 10px;
       background-size: cover;
-      background-position: center center;
+      background-position: center;
+      margin-right: 10px;
     }
-
-    /* Аватарка для исходящих сообщений в ЧАТЕ №1 */
-    .message.out .icon {
+    .avatar-chat1 {
       background-image: url('https://optim.tildacdn.com/tild6437-6261-4035-b738-626632653034/-/resize/100x/-/format/webp/Frame_2087325175.jpg');
     }
-
     .message.in .icon {
       display: none;
     }
 
     .message .text {
       position: relative;
-      top: -20px;
       background-color: #f1f1f1;
       padding: 10px;
       max-width: 70%;
-      font-family: inherit;
+      font-family: 'Arial', sans-serif;
       font-weight: 300;
     }
 
@@ -117,39 +120,39 @@
       border-radius: 10px 10px 10px 0;
       background-color: #EFEFEF;
       color: #797979;
+      top: -20px;
     }
-
     .message.in .text {
       border-radius: 10px 0 10px 10px;
       background-color: #5E33BA;
       color: #fff;
+      top: -20px;
     }
   </style>
 </head>
 <body>
-  <!-- ЧАТ №1: Заполняет всё пространство экрана -->
-  <div class="chat-container" id="chat-container-1">
-    <div id="messageBox_1" class="messageBox">
-      <!-- Первое исходящее сообщение на русском -->
-      <div id="firstMessageOutChatbot_1" class="message out">
-        <div class="icon"></div>
-        <div id="firstMessageOutChatbotText_1" class="text">
-          Привет! Я Алекс, я знаю все про DXRT Business и отвечу на любые вопросы.
+  <div class="fixed-container">
+    <div class="chat-container" id="chat-container-1">
+      <div id="messageBox_1" class="messageBox">
+        <!-- Первое (out) сообщение -->
+        <div class="message out">
+          <div class="icon avatar-chat1"></div>
+          <div class="text">
+            Привет! Я Алекс, я знаю все о DXRT Business. Не стесняйся спрашивать.
+          </div>
         </div>
       </div>
-    </div>
-    <div class="input-group">
-      <input type="text" id="message-input-1" placeholder="Введите сообщение...">
-      <button id="send-button-1">Отправить</button>
+      <div class="input-group">
+        <input type="text" id="message-input-1" placeholder="Введите сообщение...">
+        <button id="send-button-1">Отправить</button>
+      </div>
     </div>
   </div>
 
   <script>
-    // Локальный ключ и clientId для чата №1
     const localStorageKey1 = 'clientId_1';
     let clientId1 = localStorage.getItem(localStorageKey1);
 
-    // WebSocket-соединение
     let socket1 = new WebSocket('wss://ws1.dxrt.ai');
     let intervalId1;
 
@@ -157,7 +160,6 @@
       return ws.readyState === ws.OPEN;
     }
 
-    // Функция отправки сообщения
     function sendMessage1() {
       const inputField1 = document.getElementById('message-input-1');
       const messageBox1 = document.getElementById('messageBox_1');
@@ -165,20 +167,20 @@
       if (!message) return;
       inputField1.value = '';
       if (isOpen(socket1)) {
-        socket1.send(JSON.stringify({ clientId: clientId1, message: message }));
+        socket1.send(JSON.stringify({ clientId: clientId1, message }));
       }
-      // Добавляем сообщение в интерфейс (как входящее от пользователя)
-      const outgoingMessageElement = document.createElement('div');
-      outgoingMessageElement.className = 'message in';
+      // Добавляем "in" сообщение
+      const userMsg = document.createElement('div');
+      userMsg.className = 'message in';
       const textDiv = document.createElement('div');
       textDiv.className = 'text';
       textDiv.innerHTML = message;
-      outgoingMessageElement.appendChild(textDiv);
-      messageBox1.appendChild(outgoingMessageElement);
+      userMsg.appendChild(textDiv);
+      messageBox1.appendChild(userMsg);
+
       messageBox1.scrollTop = messageBox1.scrollHeight;
     }
 
-    // Привязываем кнопке и Enter
     document.getElementById('send-button-1').addEventListener('click', sendMessage1);
     document.getElementById('message-input-1').addEventListener('keydown', function(e) {
       if (e.keyCode === 13) {
@@ -187,16 +189,12 @@
       }
     });
 
-    // Инициализация сокета
     socket1.addEventListener('open', function() {
-      // Если нет clientId, запрашиваем у сервера
       if (!clientId1) {
         socket1.send(JSON.stringify({ clientId: clientId1, message: 'getClientId' }));
       }
-      // Запрашиваем историю
       socket1.send(JSON.stringify({ clientId: clientId1, message: 'getHistory' }));
 
-      // Отправляем ping каждые 5 секунд
       intervalId1 = setInterval(() => {
         if (!isOpen(socket1)) {
           socket1.close();
@@ -216,40 +214,36 @@
       try {
         data = JSON.parse(event.data);
       } catch (e) {
-        console.error('Invalid JSON in chat #1', event.data);
+        console.error('Invalid JSON in Chat #1', event.data);
         return;
       }
 
-      // Обработка ответа "clientId"
       if (data.type === 'clientId') {
         clientId1 = data.msg;
         localStorage.setItem(localStorageKey1, clientId1);
         return;
       }
-
-      // Обработка редактирования
       if (data.type === 'edit') {
-        const messageElement = document.getElementById(data.id);
-        if (messageElement) {
-          messageElement.innerHTML = data.msg;
+        const editEl = document.getElementById(data.id);
+        if (editEl) {
+          editEl.innerHTML = data.msg;
           messageBox1.scrollTop = messageBox1.scrollHeight + 40;
         }
         return;
       }
-
-      // Иначе — обычное сообщение
-      const incomingMessageElement = document.createElement('div');
-      incomingMessageElement.className = `message ${data.direction}`;
-      const iconDivChat = document.createElement('div');
-      iconDivChat.className = 'icon';
+      const incomingMsg = document.createElement('div');
+      incomingMsg.className = `message ${data.direction}`;
+      const iconDiv = document.createElement('div');
+      iconDiv.className = 'icon avatar-chat1';
       const textDiv = document.createElement('div');
       textDiv.className = 'text';
       textDiv.id = data.id;
       textDiv.innerHTML = data.msg;
 
-      incomingMessageElement.appendChild(iconDivChat);
-      incomingMessageElement.appendChild(textDiv);
-      messageBox1.appendChild(incomingMessageElement);
+      incomingMsg.appendChild(iconDiv);
+      incomingMsg.appendChild(textDiv);
+      messageBox1.appendChild(incomingMsg);
+
       messageBox1.scrollTop = messageBox1.scrollHeight + 40;
     });
 
@@ -266,7 +260,6 @@
     socket1.addEventListener('close', function() {
       console.log('Connection closed for Chat #1');
       clearInterval(intervalId1);
-      // Попытка переподключения
       setTimeout(() => {
         socket1 = new WebSocket('wss://ws1.dxrt.ai');
       }, 2000);
