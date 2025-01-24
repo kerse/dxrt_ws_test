@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0 user-scalable=0" />
-  <title>Чат №3</title>
+  <title>Chat #3</title>
   <style>
     html, body {
       margin: 0;
@@ -16,7 +16,7 @@
       width: 100%;
       max-width: 800px;
       height: 600px;
-      margin: 0 auto;
+      margin: 16px auto 0;
       border: 1px solid #fff;
       box-sizing: border-box;
       overflow: hidden;
@@ -31,11 +31,10 @@
     }
 
     .messageBox {
-      margin-top: 16px;
       flex: 1;
       display: flex;
       flex-direction: column;
-      justify-content: flex-start; /* Сверху вниз */
+      justify-content: flex-start;
       padding: 10px;
       box-sizing: border-box;
       overflow-y: auto;
@@ -98,7 +97,7 @@
       margin-right: 10px;
     }
 
-    /* Уникальная аватарка Чата №3 */
+    /* Unique avatar for Chat #3 */
     .avatar-chat3 {
       background-image: url('https://optim.tildacdn.com/tild3361-6337-4339-b233-366166613337/-/resize/100x/-/format/webp/Frame_2087325177.jpg');
     }
@@ -135,17 +134,17 @@
   <div class="fixed-container">
     <div class="chat-container" id="chat-container-3">
       <div id="messageBox_3" class="messageBox">
-        <!-- Первое сообщение Чат №3 -->
+        <!-- First out message in Chat #3 -->
         <div class="message out">
           <div class="icon avatar-chat3"></div>
           <div class="text">
-            Здравствуй! Меня зовут Эльза, назови дату твоего рождения и я расскажу о твоем характере.
+            Hello! My name is Elsa, tell me your date of birth and I'll describe your character!
           </div>
         </div>
       </div>
       <div class="input-group">
-        <input type="text" id="message-input-3" placeholder="Введите сообщение..." />
-        <button id="send-button-3">Отправить</button>
+        <input type="text" id="message-input-3" placeholder="Type a message..." />
+        <button id="send-button-3">Send</button>
       </div>
     </div>
   </div>
@@ -207,7 +206,7 @@
     socket3.addEventListener('message', function(event) {
       const messageBox3 = document.getElementById('messageBox_3');
       if (event.data === 'pong') {
-        console.log('Чат #3 получил pong');
+        console.log('Chat #3 got pong');
         return;
       }
       let data;

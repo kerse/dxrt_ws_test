@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0 user-scalable=0" />
-  <title>Чат №3</title>
+  <title>Chat #1</title>
   <style>
     html, body {
       margin: 0;
@@ -16,7 +16,8 @@
       width: 100%;
       max-width: 800px;
       height: 600px;
-      margin: 0 auto;
+      /* ВАЖНО: отступ сверху 16px */
+      margin: 16px auto 0; 
       border: 1px solid #fff;
       box-sizing: border-box;
       overflow: hidden;
@@ -31,15 +32,14 @@
     }
 
     .messageBox {
-      margin-top: 16px;
       flex: 1;
       display: flex;
       flex-direction: column;
-      justify-content: flex-start; /* Сверху вниз */
+      justify-content: flex-start; /* Messages from top to bottom */
       padding: 10px;
       box-sizing: border-box;
-      overflow-y: auto;
-      min-height: 0;
+      overflow-y: auto; 
+      min-height: 0; /* Ensures scrolling in flex container */
       background-color: #fff;
     }
 
@@ -89,6 +89,7 @@
       justify-content: flex-end;
     }
 
+    /* Unique avatar for Chat #1 */
     .icon {
       width: 40px;
       height: 40px;
@@ -97,12 +98,9 @@
       background-position: center;
       margin-right: 10px;
     }
-
-    /* Уникальная аватарка Чата №3 */
-    .avatar-chat3 {
-      background-image: url('https://optim.tildacdn.com/tild3361-6337-4339-b233-366166613337/-/resize/100x/-/format/webp/Frame_2087325177.jpg');
+    .avatar-chat1 {
+      background-image: url('https://optim.tildacdn.com/tild6437-6261-4035-b738-626632653034/-/resize/100x/-/format/webp/Frame_2087325175.jpg');
     }
-
     .message.in .icon {
       display: none;
     }
@@ -115,7 +113,6 @@
       font-family: 'Arial', sans-serif;
       font-weight: 300;
     }
-
     .message.out .text {
       border-radius: 10px 10px 10px 0;
       background-color: #EFEFEF;
@@ -133,42 +130,42 @@
 <body>
 
   <div class="fixed-container">
-    <div class="chat-container" id="chat-container-3">
-      <div id="messageBox_3" class="messageBox">
-        <!-- Первое сообщение Чат №3 -->
+    <div class="chat-container" id="chat-container-1">
+      <div id="messageBox_1" class="messageBox">
+        <!-- First "out" message for Chat #1 -->
         <div class="message out">
-          <div class="icon avatar-chat3"></div>
+          <div class="icon avatar-chat1"></div>
           <div class="text">
-            Здравствуй! Меня зовут Эльза, назови дату твоего рождения и я расскажу о твоем характере.
+            Hello! I'm Alex, I know everything about DXRT Business. Feel free to ask!
           </div>
         </div>
       </div>
       <div class="input-group">
-        <input type="text" id="message-input-3" placeholder="Введите сообщение..." />
-        <button id="send-button-3">Отправить</button>
+        <input type="text" id="message-input-1" placeholder="Type a message..." />
+        <button id="send-button-1">Send</button>
       </div>
     </div>
   </div>
 
   <script>
-    const localStorageKey3 = 'clientId_3';
-    let clientId3 = localStorage.getItem(localStorageKey3);
+    const localStorageKey1 = 'clientId_1';
+    let clientId1 = localStorage.getItem(localStorageKey1);
 
-    let socket3 = new WebSocket('wss://ws3.dxrt.ai');
-    let intervalId3;
+    let socket1 = new WebSocket('wss://ws1.dxrt.ai');
+    let intervalId1;
 
     function isOpen(ws) {
       return ws.readyState === ws.OPEN;
     }
 
-    function sendMessage3() {
-      const inputField3 = document.getElementById('message-input-3');
-      const messageBox3 = document.getElementById('messageBox_3');
-      const message = inputField3.value.trim();
+    function sendMessage1() {
+      const inputField1 = document.getElementById('message-input-1');
+      const messageBox1 = document.getElementById('messageBox_1');
+      const message = inputField1.value.trim();
       if (!message) return;
-      inputField3.value = '';
-      if (isOpen(socket3)) {
-        socket3.send(JSON.stringify({ clientId: clientId3, message }));
+      inputField1.value = '';
+      if (isOpen(socket1)) {
+        socket1.send(JSON.stringify({ clientId: clientId1, message }));
       }
       const userMsg = document.createElement('div');
       userMsg.className = 'message in';
@@ -176,65 +173,65 @@
       textDiv.className = 'text';
       textDiv.innerHTML = message;
       userMsg.appendChild(textDiv);
-      messageBox3.appendChild(userMsg);
+      messageBox1.appendChild(userMsg);
 
-      messageBox3.scrollTop = messageBox3.scrollHeight;
+      messageBox1.scrollTop = messageBox1.scrollHeight;
     }
 
-    document.getElementById('send-button-3').addEventListener('click', sendMessage3);
-    document.getElementById('message-input-3').addEventListener('keydown', function(e) {
+    document.getElementById('send-button-1').addEventListener('click', sendMessage1);
+    document.getElementById('message-input-1').addEventListener('keydown', function(e) {
       if (e.keyCode === 13) {
         e.preventDefault();
-        sendMessage3();
+        sendMessage1();
       }
     });
 
-    socket3.addEventListener('open', function() {
-      if (!clientId3) {
-        socket3.send(JSON.stringify({ clientId: clientId3, message: 'getClientId' }));
+    socket1.addEventListener('open', function() {
+      if (!clientId1) {
+        socket1.send(JSON.stringify({ clientId: clientId1, message: 'getClientId' }));
       }
-      socket3.send(JSON.stringify({ clientId: clientId3, message: 'getHistory' }));
+      socket1.send(JSON.stringify({ clientId: clientId1, message: 'getHistory' }));
 
-      intervalId3 = setInterval(() => {
-        if (!isOpen(socket3)) {
-          socket3.close();
+      intervalId1 = setInterval(() => {
+        if (!isOpen(socket1)) {
+          socket1.close();
         } else {
-          socket3.send(JSON.stringify({ clientId: clientId3, message: 'ping' }));
+          socket1.send(JSON.stringify({ clientId: clientId1, message: 'ping' }));
         }
       }, 5000);
     });
 
-    socket3.addEventListener('message', function(event) {
-      const messageBox3 = document.getElementById('messageBox_3');
+    socket1.addEventListener('message', function(event) {
+      const messageBox1 = document.getElementById('messageBox_1');
       if (event.data === 'pong') {
-        console.log('Чат #3 получил pong');
+        console.log('Chat #1 got pong');
         return;
       }
       let data;
       try {
         data = JSON.parse(event.data);
-      } catch (e) {
-        console.error('Invalid JSON in chat #3', event.data);
+      } catch (err) {
+        console.error('Invalid JSON in Chat #1', event.data);
         return;
       }
 
       if (data.type === 'clientId') {
-        clientId3 = data.msg;
-        localStorage.setItem(localStorageKey3, clientId3);
+        clientId1 = data.msg;
+        localStorage.setItem(localStorageKey1, clientId1);
         return;
       }
       if (data.type === 'edit') {
-        const msgEl = document.getElementById(data.id);
-        if (msgEl) {
-          msgEl.innerHTML = data.msg;
-          messageBox3.scrollTop = messageBox3.scrollHeight + 40;
+        const editEl = document.getElementById(data.id);
+        if (editEl) {
+          editEl.innerHTML = data.msg;
+          messageBox1.scrollTop = messageBox1.scrollHeight + 40;
         }
         return;
       }
       const incomingMsg = document.createElement('div');
       incomingMsg.className = `message ${data.direction}`;
       const iconDiv = document.createElement('div');
-      iconDiv.className = 'icon avatar-chat3';
+      iconDiv.className = 'icon avatar-chat1';
       const textDiv = document.createElement('div');
       textDiv.className = 'text';
       textDiv.id = data.id;
@@ -242,26 +239,26 @@
 
       incomingMsg.appendChild(iconDiv);
       incomingMsg.appendChild(textDiv);
-      messageBox3.appendChild(incomingMsg);
+      messageBox1.appendChild(incomingMsg);
 
-      messageBox3.scrollTop = messageBox3.scrollHeight + 40;
+      messageBox1.scrollTop = messageBox1.scrollHeight + 40;
     });
 
-    socket3.addEventListener('error', function() {
-      console.error('WebSocket error in Chat #3');
-      if (!clientId3) {
-        socket3.send(JSON.stringify({ clientId: clientId3, message: 'getClientId' }));
+    socket1.addEventListener('error', function() {
+      console.error('WebSocket error in Chat #1');
+      if (!clientId1) {
+        socket1.send(JSON.stringify({ clientId: clientId1, message: 'getClientId' }));
       }
       setTimeout(() => {
-        socket3.close();
+        socket1.close();
       }, 1000);
     });
 
-    socket3.addEventListener('close', function() {
-      console.log('Connection closed for Chat #3');
-      clearInterval(intervalId3);
+    socket1.addEventListener('close', function() {
+      console.log('Connection closed for Chat #1');
+      clearInterval(intervalId1);
       setTimeout(() => {
-        socket3 = new WebSocket('wss://ws3.dxrt.ai');
+        socket1 = new WebSocket('wss://ws1.dxrt.ai');
       }, 2000);
     });
   </script>
